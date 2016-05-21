@@ -9,7 +9,8 @@ if false; then
         --exclude=locales,aptitude,gnupg,cron,udev,tasksel,rsyslog,groff-base,manpages,gpgv,man-db,apt,debian-archive-keyring,sysv-rc,sysvinit,insserv,python2.6 \
         --arch i386 \
         squeeze squeeze \
-        'http://mirror.yandex.ru/debian'
+        #'http://mirror.yandex.ru/debian'
+        'http://archive.debian.org/debian'
 fi
 
 IMAGE_SIZE=120 # megabytes
@@ -65,5 +66,5 @@ echo -e '#!/bin/sh\necho \$* > /dev/clipboard\n' > $ddd/bin/answer
 chmod a+x $ddd/bin/answer
 df -h $ddd/
 "
-rm -rf $ddd
-make splitted
+#rm -rf $ddd
+#make splitted

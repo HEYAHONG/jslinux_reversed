@@ -10,15 +10,18 @@
     <script type="text/javascript">
         function megastart() {
             var realstart=function() {
-                var prefix='/jslinux';
+                var prefix='/jslinux_reversed';
 
-                var prefix = '/jslinux';
+            //    var prefix = '/jslinux';
                 var j1 = new JSLinuxWithGUI(
                         document.getElementById('terminal1'),
                         'linux1',
                         prefix,
-                        "console=ttyS0 root=/dev/hda ro init=/sbin/init notsc=1 hibernate=nocompress resume=/dev/hdb"
+                        //"console=ttyS0 root=/dev/hda ro init=/sbin/init notsc=1 hibernate=nocompress resume=/dev/hdb",
+                        "console=ttyS0 root=/dev/hda ro init=/sbin/init notsc=1",
+			document.getElementById('canvas1')
                 );
+		console.log("------------>>/sbin/init-->");
                 j1.start();
             };
 
@@ -44,5 +47,6 @@
 
 <body onload="megastart()">
 <div id="terminal1"></div>
+<div id="canvas1"></div>
 </body>
 </html>
