@@ -24,7 +24,10 @@ function jslinux(clipboard_get, clipboard_set, emulname, bin_prefix, cmdline) {
         if (ret < 0) {
             throw "preload binaries failed";
         }
-        block_list = [ 0, 7, 3, 643, 720, 256, 336, 644, 781, 387, 464, 475, 131, 589, 468, 472, 474, 776, 777, 778, 779, 465, 466, 473, 467, 469, 470, 512, 592, 471, 691, 697, 708, 792, 775, 769 ];
+        //block_list = [ 0, 7, 3, 643, 720, 256, 336, 644, 781, 387, 464, 475, 131, 589, 468, 472, 474, 776, 777, 778, 779, 465, 466, 473, 467, 469, 470, 512, 592, 471, 691, 697, 708, 792, 775, 769 ];
+	for(var i=0;i<3839;i++){
+        	block_list[i]=i;
+    	}
         pc.ide0.drives[0].bs.preload(block_list, start4);
     }
 
