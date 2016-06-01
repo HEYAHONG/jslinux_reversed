@@ -1,0 +1,32 @@
+<script type="text/javascript">
+var jsonstr={'name':"haoning","no":123};
+function save(dataModel){
+	console.log(dataModel);
+    var value = dataModel.serialize();
+    window.localStorage['DataModel'] = value;
+    window.localStorage['DataCount'] = dataModel.size();
+    console.log(dataModel.size() + ' datas are saved');
+    return value;
+}
+function test(){
+save(jsonstr);
+}
+
+function restore(dataModel){  
+    var value = window.localStorage['DataModel'];
+    if(value){
+        dataModel.deserialize(value);
+        console.log(window.localStorage['DataCount'] + ' datas are restored');
+        return value;
+    }    
+    return '';
+}
+function clear(){
+    if(window.localStorage['DataModel']){
+        console.log(window.localStorage['DataCount'] + ' datas are cleared');
+        delete window.localStorage['DataModel'];
+        delete window.localStorage['DataCount'];         
+    }   
+}
+</script>
+<input type="button" onclick="test()" value="test"/>

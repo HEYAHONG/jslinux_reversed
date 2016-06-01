@@ -1,0 +1,147 @@
+<a href="filesystem:http://192.168.139.85/temporary/">filesystem:http://192.168.139.85/temporary/</a></br>
+<input type="button" value="create log and /log/log.txt" onclick="create_test()"/></br>
+<input type="text" id="delete_file" value="/log/log.txt"/>
+<input type="button" value="delete file" onclick="window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onDeleteFile, errorHandler)"/></br>
+<input type="button" value="read /log/log.txt" onclick="window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onReadFile, errorHandler)"/></br>
+<input type="file" id="myfile" multiple /> </br> 
+<input type="button" value="delete dir log" onclick="window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onDeleteDir, errorHandler)"/></br>
+<script type="text/javascript">
+window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;  
+
+function onMkdir(fs) {
+	console.log('mkdir log,  Opened file system: ' + fs.name);
+    fs.root.getDirectory('log', {create: true, exclusive: true}, function(dirEntry) {  
+  	    console.log("-----create---/log");
+  	    dirEntry.isDirectory ===  true;
+  	    dirEntry.name == 'log';  
+  	    dirEntry.fullPath == '/log';
+  	}, errorHandler);  
+}
+function onInitFile(fs) {
+    console.log('create /log/log.txt,  Opened file system: ' + fs.name);
+    fs.root.getFile('/log/log.txt', {create: true, exclusive: true}, function(fileEntry) {  
+        console.log("-----create---/log/log.txt");
+        fileEntry.isFile === true  
+        fileEntry.name == 'log.txt'  
+        fileEntry.fullPath == '/log/log.txt'  
+        fileEntry.createWriter(function(fileWriter) {  
+			fileWriter.onwriteend = function(e) {  
+  	  			console.log('Write completed.');  
+  	    	};  
+  	  		fileWriter.onerror = function(e) {  
+  	  			console.log('Write failed: ' + e.toString());  
+  	    	};  
+  	
+  	    	// Create a new Blob and write it to log.txt.  
+//	    	var bb = new BlobBuilder(); // Note: window.WebKitBlobBuilder in Chrome 12.  
+// 	    	var bb = new window.WebKitBlobBuilder();// in Chrome 12.  
+//			var bb = new (window.MozBlobBuilder || window.WebKitBlobBuilder || window.BlobBuilder)();
+// 	    	bb.append('hello haoning');  
+//			new Blob(["data"]);
+//  	   	fileWriter.write(bb.getBlob('text/plain'));  
+//			http://stackoverflow.com/questions/14527820/does-html-5s-blobbuilder-still-work-in-google-chrome
+  	    	fileWriter.write(new Blob(["hello ","haoning"]));  
+  	
+    	}, errorHandler);  
+  }, errorHandler);  
+}
+function onReadFile(fs) {  
+	console.log('read /log/log.txt,  Opened file system: ' + fs.name);
+	fs.root.getFile('/log/log.txt', {}, function(fileEntry) {  
+    // Get a File object representing the file,  
+    // then use FileReader to read its contents.  
+    fileEntry.file(function(file) {  
+       var reader = new FileReader();  
+       reader.onloadend = function(e) {  
+         var txtArea = document.createElement('textarea');  
+         txtArea.value = this.result;  
+         document.body.appendChild(txtArea);  
+       };  
+       reader.readAsText(file);  
+    }, errorHandler);  
+  }, errorHandler);  
+}  
+function onDeleteFile(fs) {
+	console.log('rm <file> ,Opened file system: ' + fs.name);
+	fs.root.getFile(document.getElementById("delete_file").value, {delete: true, exclusive: true}, function(fileEntry) {  
+		console.log("delete--------log.txt");
+		fileEntry.remove(successCallback, opt_errorCallback);  
+	}, errorHandler);  
+}
+function onDeleteDir(fs) {
+	console.log('rm -rf log ,Opened file system: ' + fs.name);
+    fs.root.getDirectory('log', {delete: true, exclusive: true}, function(dirEntry) {  
+	console.log("delete--------log");
+    //dirEntry.remove(successCallback, errorHandler);  
+    dirEntry.removeRecursively(successCallback, opt_errorCallback); 
+  }, errorHandler);  
+}
+
+//window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onMkdir, errorHandler);
+//window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onInitFile, errorHandler);
+//window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onDeleteFile, errorHandler);
+//window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onDeleteDir, errorHandler);
+//window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onReadFile, errorHandler);
+
+function create_test(){
+	window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onMkdir, errorHandler);
+	window.requestFileSystem(window.TEMPORARY, 5*1024*1024 , onInitFile, errorHandler);	
+}
+
+document.querySelector('#myfile').onchange = function(e) {  
+	var files = this.files;  
+	window.requestFileSystem(window.TEMPORARY, 1024*1024, function(fs) {  
+		// Duplicate each file the user selected to the app's fs.  
+	    for (var i = 0, file; file = files[i]; ++i) {  
+	      // Capture current iteration's file in local scope for the getFile() callback.  
+			(function(f) {  
+				fs.root.getFile("/log/"+file.name, {create: true, exclusive: true}, function(fileEntry) {  
+	     	    	fileEntry.createWriter(function(fileWriter) {  
+						fileWriter.write(f); // Note: write() can take a File or Blob object.  
+	          		}, errorHandler);  
+	        	}, errorHandler);  
+	      	})(file);  
+	  
+	    }  
+	}, errorHandler);  
+};  
+//---------------------------------------------
+function successCallback(){
+	console.log("---->successCallback.");
+}
+function opt_errorCallback(eee){
+	console.log("this error:"+eee);
+}
+function errorHandler(e) {  
+  var msg = '';  
+  
+  switch (e.code) {  
+    case FileError.QUOTA_EXCEEDED_ERR:  
+      msg = 'QUOTA_EXCEEDED_ERR';  
+      break;  
+    case FileError.NOT_FOUND_ERR:  
+      msg = 'NOT_FOUND_ERR';  
+      break;  
+    case FileError.SECURITY_ERR:  
+      msg = 'SECURITY_ERR';  
+      break;  
+    case FileError.INVALID_MODIFICATION_ERR:  
+      msg = 'INVALID_MODIFICATION_ERR';  
+      break;  
+    case FileError.INVALID_STATE_ERR:  
+      msg = 'INVALID_STATE_ERR';  
+      break;  
+    default:  
+      msg = 'Unknown Error';  
+      break;  
+  };  
+  
+  console.log('Error1: ' + msg);  
+} 
+//window.webkitStorageInfo.requestQuota(TEMPORARY, 1024*1024, function(grantedBytes) {  
+//	console.log("ccccccccccc");
+//	window.requestFileSystem(TEMPORARY, grantedBytes, onInitFs, errorHandler);  
+//	}, function(e) {  
+//  console.log('Error', e);  
+//});
+</script>

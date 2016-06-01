@@ -1,6 +1,7 @@
 "use strict";
 
 function JSLinuxWithGUI(term_container, linuxname, prefix, cmdline, canvas_container) {
+//function JSLinuxWithGUI(term_container, linuxname, prefix, cmdline) {
     if (typeof Uint8Array == 'undefined' || typeof Uint16Array == 'undefined' || typeof Int32Array == 'undefined' || typeof ArrayBuffer == 'undefined') {
         this.report_no_support(term_container);
         return;
@@ -31,6 +32,7 @@ function JSLinuxWithGUI(term_container, linuxname, prefix, cmdline, canvas_conta
 
     //predefined event
     worker.onmessage = function (evt) {
+ 		console.log("---jslinuxwithgui.js-worker.onmessage-->"+evt.data.what);
         switch (evt.data.what) {
             case 'com1_output':
                 if (term)
@@ -75,7 +77,7 @@ function JSLinuxWithGUI(term_container, linuxname, prefix, cmdline, canvas_conta
         prefix: prefix,
         cmdline: cmdline
     };
-    term = new Term(80, 30, function (data) {
+    term = new Term(80, 130, function (data) {
         worker.postMessage({
             what: 'com1_input',
             str: data

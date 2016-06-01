@@ -10,10 +10,11 @@
     <script type="text/javascript" src="jslinuxwithgui.js"></script>
     <script type="text/javascript">
         function megastart() {
+			console.log("----->megastart");
             var realstart=function() {
-                var prefix='/jslinux';
-                var j1 = new JSLinuxWithGUI(document.getElementById('terminal1'), 'linux1', prefix, "console=ttyS0 root=/dev/hda ro notsc=1 init=/sbin/init");
-                var j2 = new JSLinuxWithGUI(document.getElementById('terminal2'), 'linux2', prefix, "console=ttyS0 root=/dev/hda ro notsc=1 init=/sbin/init");
+                var prefix='/jslinux_reversed';
+                var j1 = new JSLinuxWithGUI(document.getElementById('terminal1'), 'linux1', prefix, "console=ttyS0 root=/dev/hda ro notsc=1 init=/sbin/init",document.getElementById('canvas1'));
+                var j2 = new JSLinuxWithGUI(document.getElementById('terminal2'), 'linux2', prefix, "console=ttyS0 root=/dev/hda ro notsc=1 init=/sbin/init",document.getElementById('canvas1'));
                 j1.push_to_clipboard([
                     'hostname cf-server',
                     'slattach /dev/ttyS1 &',
@@ -41,12 +42,12 @@
             // TODO: webkit only (!)
             // TODO: get real size
             var size = (16+16) * 1024 * 1024;
-            if (typeof navigator.webkitPersistentStorage != 'undefined') {
+           /* if (typeof navigator.webkitPersistentStorage != 'undefined') {
                 navigator.webkitPersistentStorage.requestQuota(size, xxx);
             } else {
                 webkitStorageInfo.requestQuota(PERSISTENT, size, xxx);
-            }
-
+            }*/
+			realstart();
         }
     </script>
 </head>
@@ -56,6 +57,7 @@
     <tr>
         <td id="terminal1"></td>
         <td id="terminal2"></td>
+		<td id="canvas1"></td>
     </tr>
 </table>
 </body>
