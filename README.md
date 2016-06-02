@@ -1,4 +1,5 @@
-`
-print hello
+```javascript
+var test =ducoment.getElementById('aa');
+alert("haha");
 
-`
+```
