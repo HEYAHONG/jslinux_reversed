@@ -17,3 +17,5 @@ May 23, 2001:
 
 - allow more recent kernels to boot.
 
+
+ qemu-system-i386 -kernel /root/jslinux/obj/linux-x86-basic/arch/i386/boot/bzImage -drive file=hda.img.ubuntu,if=ide,cache=none -append "console=ttyS0 root=/dev/sda rw rdinit=/sbin/init notsc=1"  -nographic -boot order=dc,menu=on
